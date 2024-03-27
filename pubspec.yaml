@@ -9,8 +9,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  firebase_auth: ^4.17.9
+  firebase_storage: ^11.6.11
   firebase_core: ^2.27.1
+  firebase_ui_firestore: ^1.6.2
+  cloud_firestore: ^4.15.10
 
 dev_dependencies:
   flutter_test:

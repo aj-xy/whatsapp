@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:whatsapp/firebase_options.dart';
+import 'package:whatsapp/textpage.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,12 +28,14 @@ class _MainAppState extends State<MainApp> {
 
 class Myapp extends StatefulWidget {
   const Myapp({super.key});
+  
 
   @override
   State<Myapp> createState() => _MyappState();
 }
 
 class _MyappState extends State<Myapp> {
+  TextEditingController usernameController =TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,7 +56,7 @@ class _MyappState extends State<Myapp> {
               SizedBox(
                 height: 20,
               ),
-              TextField(style: TextStyle(color: Colors.white),
+              TextField(controller: usernameController,style: TextStyle(color: Colors.white),
                 decoration: InputDecoration(
                     hintText: "Username",
                     hintStyle: TextStyle(color: Colors.white),
@@ -64,8 +67,10 @@ class _MyappState extends State<Myapp> {
                         borderRadius: BorderRadius.circular(20))),
               ),
               SizedBox(height: 30,),
-              ElevatedButton(onPressed: () {
-                
+              ElevatedButton(onPressed:() {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                 return Chatpage();
+                },));
               }, child: Text("Login",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),))
             ],
           ),
