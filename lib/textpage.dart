@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
+import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart';
+import 'package:whatsapp/initpage.dart';
 
 class Chatpage extends StatefulWidget {
-  const Chatpage({super.key});
+  String username;
+  Chatpage({super.key, required this.username});
 
   @override
   State<Chatpage> createState() => _ChatpageState();
@@ -11,16 +14,22 @@ class Chatpage extends StatefulWidget {
 
 class _ChatpageState extends State<Chatpage> {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
+
   TextEditingController chatController = TextEditingController();
-   CollectionReference chats = FirebaseFirestore.instance.collection('chats');
-   Future<void> addchat() {
+
+  CollectionReference chats = FirebaseFirestore.instance.collection('chats');
+
+  Future<void> addchat() {
     return chats
         .add({
           'Chat': chatController.text,
+          'User': widget.username,
+          'Timestap': DateTime.now()
         })
         .then((value) => print("Added"))
         .catchError((error) => print("Failed to add user: $error"));
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,43 +63,131 @@ class _ChatpageState extends State<Chatpage> {
             SizedBox(
               width: 10,
             ),
-            Text("Sam")
+            Text(widget.username)
           ],
         )),
       ),
-      
       body: SingleChildScrollView(
         child: SafeArea(
             child: Padding(
-              padding: const EdgeInsets.all(10),
-              child: SizedBox(height: MediaQuery.of(context).size.height-130,
-                child: Column(mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                            
+          padding: const EdgeInsets.all(10),
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height - 130,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                StreamBuilder(
+                    stream: FirebaseFirestore.instance
+                        .collection('chats')
+                        .orderBy('Timestap', descending: false)
+                        .snapshots(),
+                    builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return CircularProgressIndicator();
+                      }
+                      if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      }
+
+                      return SizedBox(
+                        height: MediaQuery.of(context).size.height - 200,
+                        child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: ListView.builder(
+                                  itemCount: snapshot.data!.docs.length,
+                                  itemBuilder: (context, index) {
+                                    return Row(
+                                      mainAxisAlignment:
+                                          snapshot.data?.docs[index]['User'] ==
+                                                  widget.username
+                                              ? MainAxisAlignment.end
+                                              : MainAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          constraints: BoxConstraints(
+                                              minWidth: 100, maxWidth: 200),
+                                          margin:
+                                              EdgeInsets.symmetric(vertical: 8),
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                            border: Border.all(
+                                                width: 3,
+                                                color: Colors.white,
+                                                style: BorderStyle.solid),
+                                          ),
+                                          padding: EdgeInsets.all(5),
+                                          child: Column(
+                                            children: [
+                                              Text(
+                                                  snapshot.data?.docs[index]
+                                                      ['User'],
+                                                  style: TextStyle(
+                                                    color: Colors.green,
+                                                  )),
+                                              Text(
+                                                snapshot.data?.docs[index]
+                                                    ['Chat'],
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 17),
+                                              ),
+                                              Text(
+                                               '${DateFormat('dd-MM-yyyy HH:mm').format(snapshot.data?.docs[index]['Timestap'].toDate())}',
+                                                style: TextStyle(
+                                                    color: Colors.grey,
+                                                    fontSize: 12),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                ),
+                              ),
+                            ]),
+                      );
+                    }),
                 Row(
                   children: [
-                    Container(height: 50,width: 343,
-                      child: TextField(controller: chatController,
+                    Container(
+                      height: 50,
+                      width: 343,
+                      child: TextField(
+                        controller: chatController,
                         style: TextStyle(color: Colors.white),
                         decoration: InputDecoration(
                             border: OutlineInputBorder(gapPadding: 20),
                             focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white, width: 3),
+                                borderSide:
+                                    BorderSide(color: Colors.white, width: 3),
                                 borderRadius: BorderRadius.circular(20)),
                             enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white, width: 3),
+                                borderSide:
+                                    BorderSide(color: Colors.white, width: 3),
                                 borderRadius: BorderRadius.circular(20))),
                       ),
-                      
-                    ),IconButton(style: IconButton.styleFrom(backgroundColor: Colors.green,),onPressed: () {
-                      addchat();
-                    }, icon: Icon(Icons.send_rounded,color: Colors.white,))
+                    ),
+                    IconButton(
+                        style: IconButton.styleFrom(
+                          backgroundColor: Colors.green,
+                        ),
+                        onPressed: () {
+                          addchat();
+                        },
+                        icon: Icon(
+                          Icons.send_rounded,
+                          color: Colors.white,
+                        ))
                   ],
                 )
-                        ],
-                      ),
-              ),
-            )),
+              ],
+            ),
+          ),
+        )),
       ),
     );
   }
