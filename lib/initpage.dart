@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:whatsapp/textpage.dart';
 
-
 class Myapp extends StatefulWidget {
   const Myapp({super.key});
 
@@ -52,7 +51,9 @@ class _MyappState extends State<Myapp> {
                   onPressed: () {
                     Navigator.push(context, MaterialPageRoute(
                       builder: (context) {
-                        return Chatpage(username: usernameController.text,);
+                        return Chatpage(
+                          username: usernameController.text,
+                        );
                       },
                     ));
                   },

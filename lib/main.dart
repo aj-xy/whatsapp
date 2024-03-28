@@ -24,5 +24,3 @@ class _MainAppState extends State<MainApp> {
     return MaterialApp(home: Myapp());
   }
 }
-
-

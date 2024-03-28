@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
-import 'package:whatsapp/initpage.dart';
 
 class Chatpage extends StatefulWidget {
   String username;
@@ -135,7 +134,7 @@ class _ChatpageState extends State<Chatpage> {
                                                     fontSize: 17),
                                               ),
                                               Text(
-                                               '${DateFormat('dd-MM-yyyy HH:mm').format(snapshot.data?.docs[index]['Timestap'].toDate())}',
+                                                '${DateFormat('kk:mm dd-MM-yyyy ').format(snapshot.data?.docs[index]['Timestap'].toDate())}',
                                                 style: TextStyle(
                                                     color: Colors.grey,
                                                     fontSize: 12),
