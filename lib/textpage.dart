@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 
 class Chatpage extends StatefulWidget {
@@ -32,14 +31,14 @@ class _ChatpageState extends State<Chatpage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromRGBO(20, 40, 100, 1),
+      backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.grey.withOpacity(0.4),
-        foregroundColor: Colors.white,
+        foregroundColor: Colors.blue,
         actions: [
           Icon(
             Icons.videocam_outlined,
-            color: Colors.white,
+            color: Colors.blue,
             size: 40,
           ),
           SizedBox(
@@ -47,7 +46,7 @@ class _ChatpageState extends State<Chatpage> {
           ),
           Icon(
             Icons.phone_outlined,
-            color: Colors.white,
+            color: Colors.blue,
             size: 30,
           ),
           SizedBox(
@@ -109,7 +108,10 @@ class _ChatpageState extends State<Chatpage> {
                                               minWidth: 100, maxWidth: 200),
                                           margin:
                                               EdgeInsets.symmetric(vertical: 8),
-                                          decoration: BoxDecoration(
+                                          decoration: BoxDecoration(color: snapshot.data?.docs[index]['User'] ==
+                                                  widget.username
+                                              ? Colors.grey.withOpacity(0.4)
+                                              : Color(0xFF2196F3).withOpacity(0.6),
                                             borderRadius:
                                                 BorderRadius.circular(20),
                                             border: Border.all(
@@ -118,14 +120,18 @@ class _ChatpageState extends State<Chatpage> {
                                                 style: BorderStyle.solid),
                                           ),
                                           padding: EdgeInsets.all(5),
-                                          child: Column(
+                                          child: Column(crossAxisAlignment: CrossAxisAlignment.center,
                                             children: [
-                                              Text(
-                                                  snapshot.data?.docs[index]
-                                                      ['User'],
-                                                  style: TextStyle(
-                                                    color: Colors.green,
-                                                  )),
+                                              Row(mainAxisAlignment: MainAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                      snapshot.data?.docs[index]
+                                                          ['User'],
+                                                      style: TextStyle(
+                                                        color: const Color.fromRGBO(255, 221, 226, 1),
+                                                      )),
+                                                ],
+                                              ),
                                               Text(
                                                 snapshot.data?.docs[index]
                                                     ['Chat'],
@@ -133,11 +139,15 @@ class _ChatpageState extends State<Chatpage> {
                                                     color: Colors.white,
                                                     fontSize: 17),
                                               ),
-                                              Text(
-                                                '${DateFormat('kk:mm dd-MM-yyyy ').format(snapshot.data?.docs[index]['Timestap'].toDate())}',
-                                                style: TextStyle(
-                                                    color: Colors.grey,
-                                                    fontSize: 12),
+                                              Row(mainAxisAlignment: MainAxisAlignment.end,
+                                                children: [
+                                                  Text(
+                                                    '${DateFormat('kk:mm').format(snapshot.data?.docs[index]['Timestap'].toDate())}',
+                                                    style: TextStyle(
+                                                        color: Colors.grey,
+                                                        fontSize: 12),
+                                                  ),
+                                                ],
                                               ),
                                             ],
                                           ),
